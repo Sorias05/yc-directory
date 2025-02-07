@@ -1,6 +1,6 @@
 import { formatDate } from "@/lib/utils";
 import { client } from "@/sanity/lib/client";
-import { STAARTUP_BY_ID_QUERY } from "@/sanity/lib/queries";
+import { STARTUP_BY_ID_QUERY } from "@/sanity/lib/queries";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,6 +8,7 @@ import React, { Suspense } from "react";
 import markdownit from "markdown-it";
 import { Skeleton } from "@/components/ui/skeleton";
 import View from "@/components/View";
+import { noImage } from "@/sanity/env";
 
 const md = markdownit();
 
@@ -16,7 +17,7 @@ export const experimental_ppr = true;
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
 
-  const post = await client.fetch(STAARTUP_BY_ID_QUERY, { id });
+  const post = await client.fetch(STARTUP_BY_ID_QUERY, { id });
 
   if (!post) return notFound();
 
@@ -32,7 +33,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
       <section className="section_container">
         <img
-          src={post.image}
+          src={post?.image ?? noImage}
           alt="thumbnail"
           className="w-full h-auto rounded-xl"
         />
@@ -43,16 +44,16 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
               className="flex gap-2 items-center mb-3"
             >
               <Image
-                src={post.author.image}
+                src={post.author?.image ?? noImage}
                 alt="avatar"
                 width={64}
                 height={64}
                 className="rounded-full drop-shadow-lg"
               />
               <div>
-                <p className="text-20-medium">{post.author.name}</p>
+                <p className="text-20-medium">{post.author?.name}</p>
                 <p className="text-16-medium !text-black-300">
-                  @{post.author.username}
+                  @{post.author?.username}
                 </p>
               </div>
             </Link>
