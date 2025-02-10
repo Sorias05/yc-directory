@@ -1,9 +1,12 @@
-import { auth, signIn, signOut } from "@/auth"
+import { auth, signIn, signOut } from "@/auth";
+import { BadgePlus, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { noImage } from "@/sanity/env";
 
 const Navbar = async () => {
-  const session = await auth()
+  const session = await auth();
 
   return (
     <header className="px-5 py-3 bg-white shadow-sm font-work-sans">
@@ -15,7 +18,8 @@ const Navbar = async () => {
           {session && session?.user ? (
             <>
               <Link href="/startup/create">
-                <span>Create</span>
+                <span className="max-sm:hidden">Create</span>
+                <BadgePlus className="size-6 sm:hidden" />
               </Link>
 
               <form
@@ -24,12 +28,20 @@ const Navbar = async () => {
                   await signOut({ redirectTo: "/" });
                 }}
               >
-                <button type="submit">Logout</button>
+                <button type="submit">
+                  <span className="max-sm:hidden">Logout</span>
+                  <LogOut className="size-6 sm:hidden text-red-500" />
+                </button>
               </form>
 
-
               <Link href={`/user/${session?.id}`}>
-                <span>{session?.user?.name}</span>
+                <Avatar className="size-10">
+                  <AvatarImage
+                    src={session?.user?.image || noImage}
+                    alt={session?.user?.name || "avatar"}
+                  />
+                  <AvatarFallback>AV</AvatarFallback>
+                </Avatar>
               </Link>
             </>
           ) : (
